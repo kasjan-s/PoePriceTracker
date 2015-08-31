@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Items list";
+}
+
+<h2>Choose an item</h2>
+
+<ul>
+    @foreach (string item in ViewBag.Items)
+    {
+        <li>@Html.ActionLink(@item, "Price/" + @item + "/Warbands", "Item")</li>
+    }
+</ul>

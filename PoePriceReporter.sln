@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Poller", "Poller\Poller.csproj", "{D95EFE29-B5DF-4DFE-9C3E-FEB392E162BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoePriceTracker", "PoePriceTracker\PoePriceTracker.csproj", "{C53EE4DC-4C96-4F0D-9EF9-E030A57ECA24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D95EFE29-B5DF-4DFE-9C3E-FEB392E162BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D95EFE29-B5DF-4DFE-9C3E-FEB392E162BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D95EFE29-B5DF-4DFE-9C3E-FEB392E162BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D95EFE29-B5DF-4DFE-9C3E-FEB392E162BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C53EE4DC-4C96-4F0D-9EF9-E030A57ECA24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C53EE4DC-4C96-4F0D-9EF9-E030A57ECA24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C53EE4DC-4C96-4F0D-9EF9-E030A57ECA24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C53EE4DC-4C96-4F0D-9EF9-E030A57ECA24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

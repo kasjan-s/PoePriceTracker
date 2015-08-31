@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = @ViewBag.Name + " in " + @ViewBag.League;
+    string itemId = @ViewBag.Name + "/" + @ViewBag.League;
+}
+
+<h2>@ViewBag.Name</h2>
+
+<p>
+    Leagues:
+    @Html.ActionLink("Standard", "Price/" + (string)@ViewBag.Name + "/Standard", "Item", new { @class = "mybutton" })
+    @Html.ActionLink("Hardcore", "Price/" + (string)@ViewBag.Name + "/Hardcore", "Item", new { @class = "mybutton" })
+    @Html.ActionLink("Warbands", "Price/" + (string)@ViewBag.Name + "/Warbands", "Item", new { @class = "mybutton" })
+    @Html.ActionLink("Tempest", "Price/" + (string)@ViewBag.Name + "/Tempest", "Item", new { @class = "mybutton" })
+</p>
+
+
+
+@ViewBag.Chart
+
+<img src="/Item/CreateChart/@itemId" alt="" /> 

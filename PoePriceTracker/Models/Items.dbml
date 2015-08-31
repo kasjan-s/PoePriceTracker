@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="items" Class="ItemsDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\v11.0;AttachDbFilename=|DataDirectory|\items.mdf;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="itemsConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Items" Member="Items">
+    <Type Name="Item">
+      <Column Name="Name" Type="System.String" DbType="NVarChar(80) NOT NULL" CanBeNull="false" />
+      <Column Name="Amount" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="MaxPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="MinPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="MedianPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="MeanPrice" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="League" Type="System.String" DbType="NVarChar(15)" CanBeNull="true" />
+      <Column Name="Timestamp" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+</Database>
