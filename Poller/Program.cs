@@ -63,79 +63,82 @@ namespace Poller
             ItemNamesDataContext itemNamesDB = new ItemNamesDataContext(DATA_CONNETION_STRING);
             ItemsDataContext itemsDB = new ItemsDataContext(DATA_CONNETION_STRING);
 
-            // Ordering so we prioritize items that haven't been updated in a while (or ever - so null = yesterday)
-            foreach (ItemName itemName in itemNamesDB.ItemNames.OrderBy(row => row.LastChecked ?? DateTime.Now.AddDays(-1)))
+            while (true)
             {
-                string[] leagues = {
+                // Ordering so we prioritize items that haven't been updated in a while (or ever - so null = yesterday)
+                foreach (ItemName itemName in itemNamesDB.ItemNames.OrderBy(row => row.LastChecked ?? DateTime.Now.AddDays(-1)))
+                {
+                    string[] leagues = {
                     "Standard", "Hardcore", "Warbands", "Tempest"
                 };
 
-                foreach (string league in leagues)
-                {
-                    int amountOfItems;
-                    int scanned = 0;
-                    List<float> prices = new List<float>();
-
-                    do
+                    foreach (string league in leagues)
                     {
-                        Response response;
-                        try
+                        int amountOfItems;
+                        int scanned = 0;
+                        List<float> prices = new List<float>();
+
+                        do
                         {
-                            response = GetItemsByName(itemName.Name, league, scanned, 200, client);
-
-                            amountOfItems = response.hits.total;
-                            scanned += response.hits.hits.Count();
-
-                            foreach (Hit hit in response.hits.hits)
+                            Response response;
+                            try
                             {
-                                prices.Add(hit._source.shop.chaosEquiv);
+                                response = GetItemsByName(itemName.Name, league, scanned, 200, client);
+
+                                amountOfItems = response.hits.total;
+                                scanned += response.hits.hits.Count();
+
+                                foreach (Hit hit in response.hits.hits)
+                                {
+                                    prices.Add(hit._source.shop.chaosEquiv);
+                                }
                             }
-                        }
-                        catch (System.InvalidOperationException e)
+                            catch (System.InvalidOperationException e)
+                            {
+                                // Deserializer found null value -> query resulted empty response
+                                amountOfItems = 0;
+                            }
+
+                            // Just to monitor status
+                            Console.WriteLine(string.Format("{0} / {1}", scanned, amountOfItems));
+
+                            // Let's try to not get banned
+                            System.Threading.Thread.Sleep(2000);
+                        } while (scanned < amountOfItems);
+
+                        prices.Sort();
+
+                        var entry = new Item
                         {
-                            // Deserializer found null value -> query resulted empty response
-                            amountOfItems = 0;
-                        }
+                            Name = itemName.Name,
+                            Amount = amountOfItems,
+                            League = league,
+                            MaxPrice = prices.Any() ? prices.Last() : 0,
+                            MinPrice = prices.Any() ? prices.First() : 0,
+                            MeanPrice = prices.Any() ? prices.Average() : 0,
+                            MedianPrice = prices.Any() ? prices[prices.Count() / 2] : 0,
+                            Timestamp = DateTime.Now
+                        };
 
-                        // Just to monitor status
-                        Console.WriteLine(string.Format("{0} / {1}", scanned, amountOfItems));
+                        itemsDB.Items.InsertOnSubmit(entry);
+                        Console.WriteLine(string.Format("min_price: {0}, max_price: {1}, median: {2}, mean: {3}, item: {4}",
+                            entry.MinPrice, entry.MaxPrice, entry.MedianPrice, entry.MeanPrice, itemName.Name));
+                    }
 
-                        // Let's try to not get banned
-                        System.Threading.Thread.Sleep(2000);
-                    } while (scanned < amountOfItems);
+                    itemName.LastChecked = DateTime.Now;
 
-                    prices.Sort();
-
-                    var entry = new Item
+                    try
                     {
-                        Name = itemName.Name,
-                        Amount = amountOfItems,
-                        League = league,
-                        MaxPrice = prices.Any() ? prices.Last() : 0,
-                        MinPrice = prices.Any() ? prices.First() : 0,
-                        MeanPrice = prices.Any() ? prices.Average() : 0,
-                        MedianPrice = prices.Any() ? prices[prices.Count() / 2] : 0,
-                        Timestamp = DateTime.Now
-                    };
+                        itemNamesDB.SubmitChanges();
+                        itemsDB.SubmitChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        // DB might be busy, or being accessed by someone else and submitting may fail
+                        // It happens only every few hundred submits so I decided to just keep ignore it and continue
 
-                    itemsDB.Items.InsertOnSubmit(entry);
-                    Console.WriteLine(string.Format("min_price: {0}, max_price: {1}, median: {2}, mean: {3}, item: {4}", 
-                        entry.MinPrice, entry.MaxPrice, entry.MedianPrice, entry.MeanPrice, itemName.Name));
-                }
-
-                itemName.LastChecked = DateTime.Now;
-
-                try
-                {
-                    itemNamesDB.SubmitChanges();
-                    itemsDB.SubmitChanges();
-                }
-                catch (Exception e)
-                {
-                    // DB might be busy, or being accessed by someone else and submitting may fail
-                    // It happens only every few hundred submits so I decided to just keep ignore it and continue
-
-                    continue;
+                        continue;
+                    }
                 }
             }
         }
